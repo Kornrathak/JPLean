@@ -1,0 +1,5 @@
+*.jar
+*.class
+/JPLean/assets/target/
+/JPLean/core/target/
+/JPLean/java/target/
