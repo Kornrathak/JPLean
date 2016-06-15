@@ -9,7 +9,8 @@ public class MyGameJava {
 
   public static void main(String[] args) {
     JavaPlatform.Config config = new JavaPlatform.Config();
-    // use config to customize the Java platform, if needed
+    config.width = 1024;
+    config.height = 768;
     JavaPlatform.register(config);
     PlayN.run(new MyGame());
   }
