@@ -1,0 +1,8 @@
+{
+  "urls": ["images/button/nextbutton.png"],
+  "sprites": [
+    { "id": "idel_1", "url": 0, "x": 0, "y": 0, "w": 192, "h": 75},
+    { "id": "idel_2", "url": 0, "x": 0, "y": 75, "w": 192, "h": 75},
+    { "id": "idel_3", "url": 0, "x": 0, "y": 150, "w": 192, "h": 75}
+  ]
+}

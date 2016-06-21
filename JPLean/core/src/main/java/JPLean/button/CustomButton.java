@@ -1,12 +1,17 @@
 package JPLean.button;
 
+import JPLean.core.GamePlayScreen;
+import JPLean.core.HiraganaScreen;
 import JPLean.core.HomeScreen;
+import JPLean.core.KatakanaScreen;
 import JPLean.sprite.Sprite;
 import JPLean.sprite.SpriteLoader;
 import playn.core.Layer;
 import playn.core.Mouse;
 import playn.core.util.Callback;
 import tripleplay.game.ScreenStack;
+
+import java.util.Random;
 
 /**
  * Created by Ex1stCeed on 6/15/2016.
@@ -18,10 +23,10 @@ public class CustomButton {
     private String jsonf;
     private boolean hasLoaded = false;
     private int status = 0;
+    private Random rand = new Random();
 
     public CustomButton(final ScreenStack ss, final String json, final float x, final float y) {
         this.jsonf = json.substring(14, json.length() - 5);
-        System.out.println(this.jsonf);
         sprite = SpriteLoader.getSprite(json);
         sprite.addCallback(new Callback<Sprite>() {
             @Override
@@ -42,23 +47,27 @@ public class CustomButton {
             public void onMouseUp(Mouse.ButtonEvent event) {
                 if (jsonf.equals("startgame")) ss.push(new HomeScreen(ss));
                 else if (jsonf.equals("modeHiragana") || jsonf.equals("modeKatakana") || jsonf.equals("modeVocabulary") || jsonf.equals("modeListening")) {
-                    if (spriteIndex == 0) {
-                        spriteIndex = 1;
-                        status = 1;
+                    if (spriteIndex == 0 && jsonf.equals("modeHiragana")) {
+                        ss.push(new HiraganaScreen(ss));
                     }
-                    else if (spriteIndex == 1) {
-                        spriteIndex = 0;
-                        status = 0;
+                    else if (spriteIndex == 0 && jsonf.equals("modeKatakana")) {
+                        ss.push(new KatakanaScreen(ss));
                     }
                 }
                 else if (jsonf.equals("pageAll") || jsonf.equals("pageOne") || jsonf.equals("pageTwo") || jsonf.equals("pageThree")) {
                     if (spriteIndex == 0) {
-                        spriteIndex = 1;
-                        status = 1;
+                        ss.push(new GamePlayScreen(ss, jsonf, status));
                     }
-                    else if (spriteIndex == 1) {
-                        spriteIndex = 0;
-                        status = 0;
+                }
+                else if (jsonf.equals("backbutton")) ss.remove(ss.top());
+                else if (jsonf.equals("nextbutton")) {
+                    if (GamePlayScreen.total > 0) {
+                        status = rand.nextInt(GamePlayScreen.total);
+                        GamePlayScreen.total--;
+                    }
+                    else {
+                        ss.remove(ss.top());
+                        ss.remove(ss.top());
                     }
                 }
             }
@@ -87,6 +96,14 @@ public class CustomButton {
             sprite.setSprite(spriteIndex);
             e = 0;
         }
+        else if (jsonf.equals("backbutton") || jsonf.equals("nextbutton") ) {
+            sprite.setSprite(spriteIndex);
+            e = 0;
+        }
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public int getStatus() {

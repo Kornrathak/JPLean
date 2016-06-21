@@ -1,10 +1,15 @@
 package JPLean.core;
 
 import JPLean.button.CustomButton;
+import playn.core.Image;
+import playn.core.ImageLayer;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 
 import java.util.ArrayList;
+
+import static playn.core.PlayN.assets;
+import static playn.core.PlayN.graphics;
 
 /**
  * Created by Ex1stCeed on 6/15/2016.
@@ -14,13 +19,13 @@ public class HomeScreen extends Screen {
     private ScreenStack ss;
     private CustomButton custom;
     private ArrayList<CustomButton> modes = new ArrayList<CustomButton>();
-    private ArrayList<CustomButton> pages = new ArrayList<CustomButton>();
     private final float x = 150f, y = 100f;
-    private int[] stateMode = new int[4];
-    private boolean hasPages = false;
+    private ImageLayer bgGame;
 
     public HomeScreen(ScreenStack ss) {
         this.ss = ss;
+        Image bgImage = assets().getImage("images/background/screen/bg.png");
+        this.bgGame = graphics().createImageLayer(bgImage);
         custom = new CustomButton(ss, "images/button/modeHiragana.json", x, y);
         modes.add(custom);
         custom = new CustomButton(ss, "images/button/modeKatakana.json", x, y * 2 - 30f);
@@ -30,38 +35,13 @@ public class HomeScreen extends Screen {
         custom = new CustomButton(ss, "images/button/modeListening.json", x, y * 4 - 90f);
         modes.add(custom);
 
-        custom = new CustomButton(ss, "images/button/pageAll.json", x * 2.5f, y);
-        pages.add(custom);
-        custom = new CustomButton(ss, "images/button/pageOne.json", x * 2.5f, y * 2 - 30f);
-        pages.add(custom);
-        custom = new CustomButton(ss, "images/button/pageTwo.json", x * 2.5f, y * 3 - 60f);
-        pages.add(custom);
-        custom = new CustomButton(ss, "images/button/pageThree.json", x * 2.5f, y * 4 - 90f);
-        pages.add(custom);
+        custom = new CustomButton(ss, "images/button/backbutton.json", x, y * 5 - 120f);
+        modes.add(custom);
     }
 
     @Override
     public void wasShown() {
-        this.layer.add(StartScreen.bgGame);
+        this.layer.add(bgGame);
         for (CustomButton item: modes) this.layer.add(item.layer());
-    }
-
-    @Override
-    public void update(int delta) {
-        for (int i = 0; i < modes.size(); i++) {
-            modes.get(i).update(delta);
-            stateMode[i] = modes.get(i).getStatus();
-        }
-
-        if (!hasPages) {
-            for (int i = 0; i < stateMode.length; i++) {
-                if (i < 2 && stateMode[i] == 1) {
-                    System.out.println(layer.size());
-                    for (int j = 0; j < pages.size(); j++) this.layer.add(pages.get(j).layer());
-                    System.out.println(layer.size());
-                    hasPages = true;
-                }
-            }
-        }
     }
 }
