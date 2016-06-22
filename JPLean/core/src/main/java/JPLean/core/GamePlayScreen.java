@@ -2,6 +2,7 @@ package JPLean.core;
 
 import JPLean.button.CustomButton;
 import JPLean.randomModes.characteres.RandomCharacteres;
+import JPLean.randomModes.vocabularies.RandomVocabulary;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import tripleplay.game.Screen;
@@ -25,6 +26,7 @@ public class GamePlayScreen extends Screen {
     private final float x = 400f, y = 300f;
     private Random random = new Random();
     private CustomButton custom;
+    private RandomVocabulary vocab;
     private ArrayList<CustomButton> state = new ArrayList<CustomButton>();
     private ArrayList<Integer> stateAll = new ArrayList<Integer>();
     private int nextstate;
@@ -39,6 +41,7 @@ public class GamePlayScreen extends Screen {
         switch (status) {
             case 0: mode = "Hiragana"; break;
             case 1: mode = "Katakana"; break;
+            case 2: mode = "vocabulary"; break;
         }
         if (status == 1 || status == 0) {
             if (jsonf.equals("pageOne")) {
@@ -68,6 +71,17 @@ public class GamePlayScreen extends Screen {
             total--;
             old = total;
         }
+        else if (status == 2) {
+            total = 60;
+            old = 60;
+            for (int i = 0; i < total; i++) stateAll.add(i);
+            int temp = random.nextInt(total);
+            this.vocab = new RandomVocabulary(x, y, mode, stateAll.get(temp));
+            stateAll.remove(temp);
+            nextstate = temp;
+            total--;
+            old = total;
+        }
 
         custom = new CustomButton(ss, "images/button/backbutton.json", x - 200, y + 200);
         state.add(custom);
@@ -79,6 +93,7 @@ public class GamePlayScreen extends Screen {
     public void wasShown() {
         this.layer.add(bgGame);
         if (status == 1 || status == 0) this.layer.add(randomes.layer());
+        else if (status == 2) this.layer.add(vocab.layer());
         for (CustomButton item: state) this.layer.add(item.layer());
     }
 
@@ -91,6 +106,19 @@ public class GamePlayScreen extends Screen {
                 if (total != old) {
                     nextstate = temp;
                     randomes.update(stateAll.get(nextstate));
+                    stateAll.remove(nextstate);
+                    old = total;
+                    e = 0;
+                }
+            }
+        }
+        else if (status == 2) {
+            e += delta;
+            if (e > 120) {
+                int temp = state.get(state.size() - 1).getStatus();
+                if (total != old) {
+                    nextstate = temp;
+                    vocab.update(stateAll.get(nextstate));
                     stateAll.remove(nextstate);
                     old = total;
                     e = 0;

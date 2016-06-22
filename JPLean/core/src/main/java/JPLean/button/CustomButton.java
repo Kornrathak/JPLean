@@ -53,6 +53,9 @@ public class CustomButton {
                     else if (spriteIndex == 0 && jsonf.equals("modeKatakana")) {
                         ss.push(new KatakanaScreen(ss));
                     }
+                    else if (spriteIndex == 0 && jsonf.equals("modeVocabulary")) {
+                        ss.push(new GamePlayScreen(ss, jsonf, 2));
+                    }
                 }
                 else if (jsonf.equals("pageAll") || jsonf.equals("pageOne") || jsonf.equals("pageTwo") || jsonf.equals("pageThree")) {
                     if (spriteIndex == 0) {
